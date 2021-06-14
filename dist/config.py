@@ -1,1 +1,0 @@
-OAUTH_TOKEN = 'oauth:rj2f3n5w8e1v4y25pir9rcuala9hkg'

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 import socket
 import datetime
 import pytz
@@ -6,14 +6,7 @@ import random
 import time
 from timeit import default_timer as timer
 from collections import namedtuple
-
 import config
-
-
-# TEMPLATE_COMMANDS = {
-#     '!discord': 'Please join the {message.channel} Discord server, {message.user}',
-#     '!so': 'Check out {message.text_args[0]}, they are a nice streamer!',
-# }
 
 
 Message = namedtuple(
@@ -28,12 +21,13 @@ class Bot:
         self.irc_server = 'irc.twitch.tv'
         self.irc_port = 6667
         self.oauth_token = config.OAUTH_TOKEN
-        self.username = 'trifectoposter'
-        # ['boomerstreams','the_stellar','bobbykaze','chimforce','deltadoid','goofy358','jakspeedruns','natetheoriginal']
-        self.channels = ['trifectoposter', 'tharixer', 'outrageousjosh', 'jishkared', 'xem92', 'hsblue', 'quietdudek', 'mikegamepro']
+        #self.username = 'BOT_NAME'  -- write bot username here
+
+        #self.channels = ['STREAMER1', 'STREAMER2']  -- write names of the streamers here and uncomment
+        
         self.custom_commands = {
             '!time': self.reply_with_time,
-            'TriFecto': self.post_trifecto,
+            'Kappa': self.post_kappa,
             'Mona': self.post_mona,
             
         }
@@ -117,17 +111,14 @@ class Bot:
 
         return message
 
-    # def handle_template_command(self, message, text_command, template):
-    #     text = template.format(**{'message': message})
-    #     self.send_privmsg(message.channel, text)
 
     def reply_with_time(self, message):
         formatted_date = datetime.datetime.now().strftime('%H:%M')
         text = f'Time  is {formatted_date}.'
         self.send_privmsg(message.channel, text)
 
-    def post_trifecto(self, message):
-        text = f'TriFecto'
+    def post_kappa(self, message):
+        text = f'Kappa'
         self.send_privmsg(message.channel, text)
 
     def post_mona(self, message):
@@ -144,45 +135,39 @@ class Bot:
             self.send_command('PONG :tmi.twitch.tv')
 
         if message.irc_command == 'PRIVMSG' and message.user != self.username:
-            # if message.text_command in TEMPLATE_COMMANDS:
-            #     self.handle_template_command(
-            #         message,
-            #         message.text_command,
-            #         TEMPLATE_COMMANDS[message.text_command],
-            #     )
-
 
             if message.text_command in self.custom_commands:
                 
                 timer_end = timer()
                 time_elapsed = timer_end - self.timer_start
 
-                if(message.text_command == 'TriFecto' and message.channel != 'jishkared'):
+                if(message.text_command == 'Kappa' and message.channel != 'STREAMER1'): ##change STREAMER1
                     if(time_elapsed > 60):
                         self.timer_start = timer()
                         time.sleep(1)
                         self.custom_commands[message.text_command](message)
                         
 
-                elif(time_elapsed > 45 and message.channel == 'jishkared'):
+                elif(time_elapsed > 45 and message.channel == 'STREAMER1'): ##change STREAMER1
                     self.timer_start = timer()
                     time.sleep(1)
                     self.custom_commands[message.text_command](message)
 
-                if(message.text_command == 'TriFecto'):
+                if(message.text_command == 'Kappa'):
                     self.periodic_start = timer()
         
         
         periodic_end = timer()
-        print("channel =", message.channel, "end = ", periodic_end, " start = ", self.periodic_start)
+        # print("channel =", message.channel, "end = ", periodic_end, " start = ", self.periodic_start)  --this is just for testing purposes
         if(periodic_end - self.periodic_start > 3600):
             self.periodic_start = timer()
             time.sleep(5)
-            text = f'TriFecto'
+            text = f'Kappa'
             self.send_privmsg(message.channel, text)
             
 
     def loop_for_messages(self):
+
         while True:
             received_msgs = self.irc.recv(2048).decode()
             for received_msg in received_msgs.split('\r\n'):
@@ -192,7 +177,6 @@ class Bot:
 def main():
     bot = Bot()
     bot.connect()
-
 
 if __name__ == '__main__':
     main()
