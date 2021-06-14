@@ -1,2 +1,2 @@
 # twitch_bot
-fun little exercise making a Twitch bot in python
+fun exercise making a Twitch bot in python for a friend
